@@ -1,0 +1,9 @@
+{
+  "OpenAI_DEV": 120.50,
+  "OpenAI_PROD": 320.75,
+  "OpenAI_INC": 150.25,
+  "Gemini": 80.40,
+  "Anthropic": 90.60,
+  "Apify": 40.30,
+  "AWS": 60.20
+}
