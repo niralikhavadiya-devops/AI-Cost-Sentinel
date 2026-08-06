@@ -22,6 +22,8 @@ with open("cost_data.json", "r") as file:
 # Dashboard Title
 # -----------------------------
 st.title("💰 AI Cost Sentinel")
+if st.button("🔄 Refresh Dashboard"):
+    st.rerun()
 st.write("Welcome to the AI Multi-Platform Cost Monitoring Dashboard")
 st.markdown("---")
 
@@ -75,6 +77,7 @@ st.metric(
     "Total Platform Spend",
     f"${total_cost:.2f}"
 )
+st.caption(f"📊 Total Platforms Monitored: {len(cost_data)}")
 highest_platform = max(cost_data, key=cost_data.get)
 highest_cost = cost_data[highest_platform]
 # Budget Health Indicator
