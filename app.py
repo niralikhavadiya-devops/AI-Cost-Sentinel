@@ -285,7 +285,11 @@ st.info(
 st.markdown("---")
 
 st.subheader("ℹ️ Project Information")
+from datetime import datetime
 
+st.write(
+    f"🕒 **Last Updated:** {datetime.now().strftime('%d %b %Y | %I:%M %p')}"
+)
 st.info("""
 **Project Name:** AI Cost Sentinel
 
