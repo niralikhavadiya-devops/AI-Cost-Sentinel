@@ -23,7 +23,17 @@ with open("cost_data.json", "r") as file:
 # -----------------------------
 st.title("💰 AI Cost Sentinel")
 st.write("Welcome to the AI Multi-Platform Cost Monitoring Dashboard")
+st.markdown("---")
 
+st.subheader("About AI Cost Sentinel")
+
+st.write(
+    """
+    AI Cost Sentinel is a multi-platform AI cost monitoring dashboard
+    designed to track spending, analyze usage patterns, and provide
+    better budget visibility across AI platforms.
+    """
+)
 st.markdown("---")
 
 # -----------------------------
