@@ -22,6 +22,16 @@ with open("cost_data.json", "r") as file:
 # Dashboard Title
 # -----------------------------
 st.title("💰 AI Cost Sentinel")
+uploaded_file = st.file_uploader(
+    "📂 Upload Cost Report (CSV)",
+    type=["csv"]
+)
+
+if uploaded_file is not None:
+    uploaded_df = pd.read_csv(uploaded_file)
+    st.success("✅ CSV uploaded successfully!")
+    cost_data = dict(zip(uploaded_df["Platform"], uploaded_df["Cost ($)"]))    
+    st.dataframe(uploaded_df, use_container_width=True)
 if st.button("🔄 Refresh Dashboard"):
     st.rerun()
 st.write("Welcome to the AI Multi-Platform Cost Monitoring Dashboard")
@@ -72,14 +82,39 @@ budgets = {
 }
 
 st.subheader("💰 Total Cost")
+if total_cost < 500:
+    st.success("🟢 Dashboard Status: Healthy")
+elif total_cost < 1000:
+    st.warning("🟡 Dashboard Status: Monitor Closely")
+else:
+    st.error("🔴 Dashboard Status: Budget Alert")
+col1, col2, col3, col4 = st.columns(4)
 
-st.metric(
-    "Total Platform Spend",
-    f"${total_cost:.2f}"
-)
+with col1:
+    st.metric("💰 Total Cost", f"${total_cost:.2f}")
+
+with col2:
+    st.metric("📊 Platforms", len(cost_data))
+
+with col3:
+    st.metric("💵 Avg Cost", f"${total_cost/len(cost_data):.2f}")
+
+with col4:
+    st.metric("🔥 Highest", max(cost_data, key=cost_data.get))
 st.caption(f"📊 Total Platforms Monitored: {len(cost_data)}")
 highest_platform = max(cost_data, key=cost_data.get)
 highest_cost = cost_data[highest_platform]
+if highest_cost > 300:
+    st.error(f"🚨 High Cost Alert: {highest_platform} is the highest spending platform (${highest_cost:.2f})")
+elif highest_cost > 200:
+    st.warning(f"⚠️ Warning: {highest_platform} spending is increasing (${highest_cost:.2f})")
+else:
+    st.success("✅ All platform costs are within normal limits.")
+st.metric(
+    "🔥 Highest Cost Platform",
+    highest_platform,
+    f"${highest_cost:.2f}"
+)
 # Budget Health Indicator
 
 if total_cost < 500:
@@ -188,7 +223,11 @@ st.subheader("🚨 Budget Monitoring")
 
 for platform, cost in cost_data.items():
     budget = budgets.get(platform, 100)
+    usage_percent = (cost / budget) * 100
 
+    st.progress(min(usage_percent / 100, 1.0))
+
+    st.caption(f"Budget Used: {usage_percent:.1f}%")
     if cost > budget:
         st.error(
             f"🔴 {platform} exceeded budget! "
@@ -279,6 +318,16 @@ st.download_button(
     file_name="ai_cost_report.csv",
     mime="text/csv"
 )
+st.markdown("---")
+st.markdown("---")
+st.subheader("📋 Cost Summary Table")
+
+summary_df = pd.DataFrame(
+    list(cost_data.items()),
+    columns=["Platform", "Cost ($)"]
+)
+
+st.dataframe(summary_df, use_container_width=True)
 st.success("✅ Dashboard Status : Healthy")
 
 st.info(
